@@ -1,0 +1,3 @@
+import React from "react";
+import ProductCard from "../components/common/ProductCard";
+export default function Deals({products,addToCart}){return <div className="container"><div className="deals-hero"><small>LIMITED TIME OFFERS</small><h1>Today's Deals</h1><p>Save more on customer favorites.</p></div><div className="product-grid">{products.map(p=><ProductCard key={p.id} product={p} addToCart={addToCart}/>)}</div></div>}

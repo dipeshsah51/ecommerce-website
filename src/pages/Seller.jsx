@@ -1,0 +1,3 @@
+import React from "react";
+import ProductCard from "../components/common/ProductCard";
+export default function Seller({products,addToCart}){return <div className="container"><div className="seller-header card"><div className="seller-avatar">SS</div><div><h1>ShopSphere Official Store</h1><p>Trusted seller · 4.7/5 rating · 98% positive feedback</p></div></div><h2>Seller products</h2><div className="product-grid">{products.map(p=><ProductCard key={p.id} product={p} addToCart={addToCart}/>)}</div></div>}

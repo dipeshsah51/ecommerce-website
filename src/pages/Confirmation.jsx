@@ -1,0 +1,3 @@
+import React from "react";
+import { Link } from "react-router-dom";
+export default function Confirmation(){const order="SS"+Date.now().toString().slice(-8);return <div className="container confirmation card"><div className="success-icon">✓</div><h1>Order placed successfully!</h1><p>Thank you for shopping with ShopSphere.</p><div className="order-number">Order number: <b>#{order}</b></div><p>Estimated delivery: <b>10–13 September 2026</b></p><div className="actions"><Link className="btn btn-primary" to="/account/orders">Track order</Link><Link className="btn btn-secondary" to="/">Continue shopping</Link></div></div>}
