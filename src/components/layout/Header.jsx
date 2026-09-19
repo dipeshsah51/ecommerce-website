@@ -8,7 +8,7 @@ import {
   MapPin,
   X,
   Heart,
-  Package
+  Package,
 } from "lucide-react";
 import { categories } from "../../data/products";
 
@@ -22,6 +22,7 @@ export default function Header({ cartCount }) {
 
     if (query.trim()) {
       navigate(`/search?q=${encodeURIComponent(query.trim())}`);
+      setMenu(false);
     }
   };
 
@@ -48,7 +49,16 @@ export default function Header({ cartCount }) {
 
         {/* Search */}
         <form className="searchbar" onSubmit={submit}>
-          <select aria-label="Search category" defaultValue="All">
+          <select
+            aria-label="Search category"
+            defaultValue="All"
+            onChange={(e) => {
+              if (e.target.value !== "All") {
+                navigate(`/category/${e.target.value}`);
+                setMenu(false);
+              }
+            }}
+          >
             <option value="All">All</option>
 
             {categories.map((category) => (
@@ -66,7 +76,7 @@ export default function Header({ cartCount }) {
           />
 
           <button type="submit" aria-label="Search">
-            <Search size={22} />
+            <Search size={21} />
           </button>
         </form>
 
@@ -117,12 +127,11 @@ export default function Header({ cartCount }) {
         <button
           className="mobile-menu"
           type="button"
-          aria-label="Open menu"
+          aria-label={menu ? "Close menu" : "Open menu"}
           onClick={() => setMenu(!menu)}
         >
           {menu ? <X size={24} /> : <Menu size={24} />}
         </button>
-
       </div>
 
       {/* Secondary Navigation */}
@@ -158,7 +167,6 @@ export default function Header({ cartCount }) {
         <Link to="/seller/demo" onClick={() => setMenu(false)}>
           Sell
         </Link>
-
       </nav>
 
     </header>

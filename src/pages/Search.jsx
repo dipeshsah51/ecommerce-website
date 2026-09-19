@@ -5,7 +5,11 @@ import ProductCard from "../components/common/ProductCard";
 import Breadcrumb from "../components/common/Breadcrumb";
 import { products, categories } from "../data/products";
 
-export default function Search({ addToCart }) {
+export default function Search({
+  addToCart,
+  wishlist,
+  toggleWishlist,
+}) {
   const { categoryId } = useParams();
   const location = useLocation();
 
@@ -15,7 +19,10 @@ export default function Search({ addToCart }) {
   const [sort, setSort] = useState("relevance");
   const [maxPrice, setMaxPrice] = useState(60000);
   const [rating, setRating] = useState(0);
-  const [showFilters, setShowFilters] = useState(false);
+const [fastDelivery, setFastDelivery] = useState(false);
+const [inStock, setInStock] = useState(false);
+const [discount, setDiscount] = useState(0);
+const [showFilters, setShowFilters] = useState(false);
 
   const categoryName = categories.find(
     (c) => c.id === categoryId
@@ -26,11 +33,15 @@ export default function Search({ addToCart }) {
       (p) =>
         (!categoryId || p.category === categoryId) &&
         (!q ||
-          `${p.title} ${p.brand}`
-            .toLowerCase()
-            .includes(q.toLowerCase())) &&
+  `${p.title} ${p.brand} ${p.category}`
+    .toLowerCase()
+    .includes(q.toLowerCase())) &&
         p.price <= maxPrice &&
-        p.rating >= rating
+p.rating >= rating &&
+(!fastDelivery || p.fastDelivery) &&
+(!inStock || p.stock > 0) &&
+(!discount ||
+  Math.round((1 - p.price / p.originalPrice) * 100) >= discount)
     );
 
     if (sort === "priceLow") {
@@ -46,12 +57,24 @@ export default function Search({ addToCart }) {
     }
 
     return result;
-  }, [categoryId, q, sort, maxPrice, rating]);
+  }, [
+  categoryId,
+  q,
+  sort,
+  maxPrice,
+  rating,
+  fastDelivery,
+  inStock,
+  discount
+]);
 
   const clearFilters = () => {
-    setMaxPrice(60000);
-    setRating(0);
-  };
+  setMaxPrice(60000);
+  setRating(0);
+  setFastDelivery(false);
+  setInStock(false);
+  setDiscount(0);
+};
 
   const pageTitle = q
     ? `Results for "${q}"`
@@ -177,30 +200,45 @@ export default function Search({ addToCart }) {
             <h4>Availability</h4>
 
             <label className="filter-check">
-              <input type="checkbox" />
-              <span>Fast delivery</span>
-            </label>
+  <input
+    type="checkbox"
+    checked={fastDelivery}
+    onChange={(e) => setFastDelivery(e.target.checked)}
+  />
+  <span>Fast delivery</span>
+</label>
 
             <label className="filter-check">
-              <input type="checkbox" />
-              <span>In stock</span>
-            </label>
+  <input
+    type="checkbox"
+    checked={inStock}
+    onChange={(e) => setInStock(e.target.checked)}
+  />
+  <span>In stock</span>
+</label>
           </div>
 
-          <div className="filter-section">
-            <h4>Discount</h4>
+         <div className="filter-section">
+  <h4>Discount</h4>
 
-            <label className="filter-check">
-              <input type="checkbox" />
-              <span>20% or more</span>
-            </label>
+  <label className="filter-check">
+    <input
+      type="checkbox"
+      checked={discount === 20}
+      onChange={() => setDiscount(discount === 20 ? 0 : 20)}
+    />
+    <span>20% or more</span>
+  </label>
 
-            <label className="filter-check">
-              <input type="checkbox" />
-              <span>30% or more</span>
-            </label>
-          </div>
-
+  <label className="filter-check">
+    <input
+      type="checkbox"
+      checked={discount === 30}
+      onChange={() => setDiscount(discount === 30 ? 0 : 30)}
+    />
+    <span>30% or more</span>
+  </label>
+</div>
           <button
             className="clear-filters"
             onClick={clearFilters}
@@ -226,10 +264,12 @@ export default function Search({ addToCart }) {
             <div className="product-grid">
               {filtered.map((product) => (
                 <ProductCard
-                  key={product.id}
-                  product={product}
-                  addToCart={addToCart}
-                />
+  key={product.id}
+  product={product}
+  addToCart={addToCart}
+  onWishlist={toggleWishlist}
+  wishlist={wishlist}
+/>
               ))}
             </div>
           ) : (

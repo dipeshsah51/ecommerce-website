@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import { Routes, Route, useNavigate } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import Header from "./components/layout/Header";
 import Footer from "./components/layout/Footer";
 import Home from "./pages/Home";
@@ -59,21 +59,77 @@ export default function App() {
       <Header cartCount={cartCount} />
       <main className="main-content">
         <Routes>
-          <Route path="/" element={<Home addToCart={addToCart} />} />
-          <Route path="/search" element={<Search addToCart={addToCart} />} />
-          <Route path="/category/:categoryId" element={<Search addToCart={addToCart} />} />
+          <Route
+  path="/"
+  element={
+    <Home
+      addToCart={addToCart}
+      wishlist={wishlist}
+      toggleWishlist={toggleWishlist}
+    />
+  }
+/>
+          <Route
+  path="/search"
+  element={
+    <Search
+      addToCart={addToCart}
+      wishlist={wishlist}
+      toggleWishlist={toggleWishlist}
+    />
+  }
+/>
+          <Route
+  path="/category/:categoryId"
+  element={
+    <Search
+      addToCart={addToCart}
+      wishlist={wishlist}
+      toggleWishlist={toggleWishlist}
+    />
+  }
+/>
           <Route path="/product/:productId" element={<ProductDetail addToCart={addToCart} wishlist={wishlist} toggleWishlist={toggleWishlist} />} />
-          <Route path="/cart" element={<Cart cart={cart} updateQty={updateQty} removeFromCart={removeFromCart} />} />
-          <Route path="/checkout" element={<Checkout cart={cart} />} />
+          <Route
+  path="/cart"
+  element={
+    <Cart
+  cart={cart}
+  updateQty={updateQty}
+  removeFromCart={removeFromCart}
+  wishlist={wishlist}
+  toggleWishlist={toggleWishlist}
+  addToCart={addToCart}
+/>
+  }
+/>
+          <Route
+  path="/checkout"
+  element={
+    <Checkout
+      cart={cart}
+      onOrderPlaced={() => saveCart([])}
+    />
+  }
+/>
           <Route path="/checkout/confirmation" element={<Confirmation />} />
-          <Route path="/account/*" element={<Account wishlist={wishlist} />} />
+          <Route
+  path="/account/*"
+  element={
+    <Account
+      wishlist={wishlist}
+      toggleWishlist={toggleWishlist}
+      addToCart={addToCart}
+    />
+  }
+/>
           <Route path="/login" element={<Auth mode="login" />} />
           <Route path="/register" element={<Auth mode="register" />} />
           <Route path="/forgot-password" element={<Auth mode="forgot" />} />
           <Route path="/seller/:sellerId" element={<Seller products={products} addToCart={addToCart} />} />
           <Route path="/deals" element={<Deals products={products} addToCart={addToCart} />} />
-          <Route path="/help" element={<Help />} />
-          <Route path="*" element={<NotFound />} />
+<Route path="/help" element={<Help />} />
+<Route path="*" element={<NotFound />} />
         </Routes>
       </main>
       <Footer />
